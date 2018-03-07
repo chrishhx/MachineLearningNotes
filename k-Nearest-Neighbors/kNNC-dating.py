@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  6 15:20:16 2018
-
-@author: chris
-"""
 
 import os
 os.chdir('/home/chris/workspace')

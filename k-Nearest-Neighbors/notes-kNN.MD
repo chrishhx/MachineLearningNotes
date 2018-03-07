@@ -28,7 +28,6 @@ k 近邻算法实际上利用训练数据集对特征向量空间进行划分，
 算法流程中计算复杂度主要在 (1) (2)，实践上一般会采用空间索引的技术降低复杂度，例如 [KD-Tree](https://dl.acm.org/citation.cfm?doid=361002.361007), [Ball-Tree](http://www.icsi.berkeley.edu/ftp/global/pub/techreports/1989/tr-89-063.pdf)
 
 ## 用scikit-learn实现kNN分类器
-
 ### 数据说明
 数据存放在csv文件 datingTestSet.csv ，无header，每一行是一个约会网站用户的属性以及在用户A心目中的分类。
 前三列分别为每年获得的飞行里程数、玩电子游戏所耗时间百分比、每周消费的冰淇淋数，第四列为某用户A对这些用户的评价，有3类标签：1表示不喜欢; 2表示有点喜欢; 3表示非常喜欢
