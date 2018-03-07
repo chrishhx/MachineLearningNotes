@@ -1,2 +1,2 @@
 # MachineLearningNotes
-Notes for machine learning algorithms
+Notes and demos codes for machine learning algorithms.
