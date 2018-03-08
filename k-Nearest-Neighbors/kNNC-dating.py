@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-os.chdir('/home/chris/workspace')
+os.chdir('/home/chris/workspace/MachineLearningNotes/k-Nearest-Neighbors')
 
 # read data
 import pandas as pd
