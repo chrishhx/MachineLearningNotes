@@ -1,4 +1,4 @@
-# k-近邻 - k Nearest Neighbors
+# k-近邻 k Nearest Neighbors
 
 ## 概述
 k-近邻（简记kNN, k-NearestNeighbor）算法是一种基本分类与回归方法，分类针对的是具有离散标签的数据，回归针对的是具有连续标签的数据。
