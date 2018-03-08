@@ -100,4 +100,8 @@ $$
 \theta = (X^T W X)^{-1} X^T W Y
 $$ 显然这是一个非参的方法，对于每一个新输入x，要用训练集的数据计算$W$才能计算$\theta$，若$W=I_n$则退化为原线性回归模型。
 
-## 用numpy实现d
+## 用numpy和scikit-learn分别实现
+用numpy直接计算公式得到参数，与sklearn.linear_model.LinearRegression的结果对比
+
+### 数据说明
+使用scikit-learn内建的boston数据集
