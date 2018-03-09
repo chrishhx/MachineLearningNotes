@@ -79,22 +79,26 @@ $$
 $$
 即有 $\theta = (X^T X)^{-1} X^T Y$
 
-## 从极大似然的角度推导
+## 从极大似然的角度解释Cost funtion
 由前面的假设，$\varepsilon_i$服从高斯分布，那么
 $$
 p(\varepsilon_i) \propto exp(-\varepsilon_i^2 / 2\sigma^2)
 $$ 也就是说 $Y \sim N(x^T \theta,\sigma^2)$
 $$
-p(y_i|x_i,\theta) \propto exp[-(y_i-x^T \theta)^2/2\sigma^2]
+p(y_i|x_i,\theta) \propto exp[-(y_i-x_i^T \theta)^2/2\sigma^2]
 $$ 似然函数为
 $$
-L(\theta) = \prod\limits_{i=1}^{n} p(y_i|x_i,\theta) \propto \prod\limits_{i=1}^{n} exp[-(y_i-x^T \theta)^2/2\sigma^2]
+L(\theta) = \prod\limits_{i=1}^{n} p(y_i|x_i,\theta) \propto \prod\limits_{i=1}^{n} exp[-(y_i-x_i^T \theta)^2/2\sigma^2]
 $$ 对数似然函数
 $$
-l(\theta) = c_1 - c_2 \sum\limits_{i=1}^{n} (y_i - x^T \theta)^2
-$$ $c_1$, $c_2$ are constants that do not matter.
-最大化$l(\theta)$就相当于最小化 $y-x^T \theta$，所以用前面的最小二乘就可以求解了，同样的，由于对数似然函数是可导的，基于梯度的方法如SGD也同样可以用于求解线性回归模型。
-
+l(\theta) = c_1 - \frac{1}{2\sigma^2} \sum\limits_{i=1}^{n} (y_i - x_i^T \theta)^2
+$$ $c_1$ 是正则化常数的对数，最大化$l(\theta)$就相当于最小化 $y-x^T \theta$，所以用前面的最小二乘就可以求解了，同样的，由于对数似然函数是可导的，基于梯度的方法如SGD也同样可以用于求解线性回归模型，$l(\theta)$梯度为
+$$
+\frac{\partial l(\theta)}{\theta_j} = (y-x^T \theta) x_{ij}
+$$ 求$-l(\theta)$的极小值点的梯度下降更新方程为
+$$
+\theta_j := \theta_j + \alpha \sum\limits_{i=1}^{n} \left[ y_i - g(x_i^T \theta) \right] x_{ij}
+$$
 
 ## 模型推广（非参）
 原模型
