@@ -5,8 +5,8 @@ import os
 os.chdir('/home/chris/workspace/MachineLearningNotes/Generalized-Linear-Models')
 
 from sklearn.datasets import load_boston
-
 import numpy as np
+
 data = load_boston(return_X_y=False)
 print(data['DESCR'])
 X = np.c_[np.ones(data['data'].shape[0]),np.matrix(data['data'])]
