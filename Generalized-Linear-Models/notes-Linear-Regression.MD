@@ -66,7 +66,7 @@ $$
 J(\theta;X=x,Y=y) = \sum\limits_{i=1}^{n} (x_i^T \theta - y_i)^2
 $$ 写成矩阵的形式：
 $$
-J(\theta;X,Y) = ||X \theta - Y||_2^2
+J(\theta;X,Y) = \|X \theta - Y\|_2^2
 $$ 求函数的最小值，只要令
 $$
 \begin{array}{lllll}

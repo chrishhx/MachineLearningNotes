@@ -1,23 +1,23 @@
 # 带约束的线性回归 Constrained Linear Regression
 
 ## 概述
-在线性回归模型$ Y = X \theta + \varepsilon $ 的求解当中，求 $\hat{\theta} = \mathrm{argmin}_\theta ||X \theta - Y||_2^2$ ，是一个无约束优化问题，而这则导致模型求解时容易受到异常值的影响从而出现过拟合的情况。为了处理这种情况，一个行之有效的做法是对模型添加约束，降低模型的复杂度。单独使用l1,l2约束为最常用的约束条件，分别对应于LASSO回归和岭回归，还有组合使用l1,l2约束的ElasticNet等。
+在线性回归模型$ Y = X \theta + \varepsilon $ 的求解当中，求 $\hat{\theta} = \mathrm{argmin}_\theta \|X \theta - Y\|_2^2$ ，是一个无约束优化问题，而这则导致模型求解时容易受到异常值的影响从而出现过拟合的情况。为了处理这种情况，一个行之有效的做法是对模型添加约束，降低模型的复杂度。单独使用l1,l2约束为最常用的约束条件，分别对应于LASSO回归和岭回归，还有组合使用l1,l2约束的ElasticNet等。
 
 还有一种特殊的子空间约束，利用线性投影映射(满足 $P^2=P , P^T=P$ 的 b×b 的矩阵) $P$ 将 $\theta$ 映射到 $P \theta$ , 以 $P \theta$ 为模型参数，即 $Y = X P \theta + \varepsilon $ ，这样就将参数空间限制在了 $P$ 的投影空间里。然而实际上构造合适的投影 $P$ 是一件很困难的事情，所以这种方法实践上应用不多。
 
-以下简记$J(\theta) = \frac{1}{2} ||X \theta - Y||_2^2$ ，对于无约束优化问题，得到的解是完全一致的，但因为此处添加了约束项，此处添加一个常数系数是为了让后面解的形式简洁，实际上不添加这一常数系数得到的解本质上也是相同的。
+以下简记$J(\theta) = \frac{1}{2} \|X \theta - Y\|_2^2$ ，对于无约束优化问题，得到的解是完全一致的，但因为此处添加了约束项，此处添加一个常数系数是为了让后面解的形式简洁，实际上不添加这一常数系数得到的解本质上也是相同的。
 
 ## 岭回归 l2-constrained linear regression
 
 往线性回归模型中添加l2限制，求解则变为：
 $$
-\mathrm{min}_\theta J(\theta) \ \ \ \ \mathrm{subject\ to}\ \ ||\theta||_2^2 \leq r^2
+\mathrm{min}_\theta J(\theta) \ \ \ \ \mathrm{subject\ to}\ \ \|\theta\|_2^2 \leq r^2
 $$ 这个限制实际上是将 $\theta$ 限制在一个半径为 $r$ 的超球体内，转化这个约束问题的拉格朗日对偶来求解：
 $$
-\mathrm{max}_\lambda \ \mathrm{min}_\theta \left[ J(\theta) + \frac{\lambda}{2} (||\theta||_2^2 - r^2) \right]
+\mathrm{max}_\lambda \ \mathrm{min}_\theta \left[ J(\theta) + \frac{\lambda}{2} (\|\theta\|_2^2 - r^2) \right]
 $$ 尽管我们看到在这里 $\lambda$ 原则上是与 $r$ 有关的，但实际操作上，我们往往不是给定 $r$，而是把 $\lambda$ 看作一个模型参数事先给定，而我们始终最关注的是 $\theta$ 即：
 $$
-\hat{\theta} = \mathrm{argmin}_\theta \left[ J(\theta) + \frac{\lambda}{2} ||\theta||_2^2 \right]
+\hat{\theta} = \mathrm{argmin}_\theta \left[ J(\theta) + \frac{\lambda}{2} \|\theta\|_2^2 \right]
 $$ 式子很容易求解，最小二乘解为：
 $$
 (X^T X + \lambda I)^{-1} X^T Y
@@ -29,14 +29,14 @@ $$ 可以看到，在求逆之前，加了一个$\lambda I$ ，$X^T X + \lambda 
 ## LASSO回归 Least Absolute Shrinkage and Selection Operator
 往线性回归模型中添加l1限制，求解则变为：
 $$
-\mathrm{min}_\theta J(\theta) \ \ \ \ \mathrm{subject\ to}\ \ ||\theta||_1 \leq r^2
-$$ 其中 $||\theta||_1$ 为 $\theta = (\theta_0,\theta_1,...,\theta_p)^T$ 的一范数 $||\theta||_1 = \sum\limits_{i} |\theta_i|$
+\mathrm{min}_\theta J(\theta) \ \ \ \ \mathrm{subject\ to}\ \ \|\theta\|_1 \leq r^2
+$$ 其中 $\|\theta\|_1$ 为 $\theta = (\theta_0,\theta_1,...,\theta_p)^T$ 的一范数 $\|\theta\|_1 = \sum\limits_{i} |\theta_i|$
 将模型描述为：
 $$
-\mathrm{min}_{\theta,z}\ \left[ J(\theta) + \lambda||z||_1 \right] \ \ \ \ \mathrm{subject\ to}\ \ \theta = z
+\mathrm{min}_{\theta,z}\ \left[ J(\theta) + \lambda\|z\|_1 \right] \ \ \ \ \mathrm{subject\ to}\ \ \theta = z
 $$ 函数没有连续一阶导数，不适合像上面那样直接求解，这里使用ADMM算法求解此问题，这个优化问题的增广拉格朗日函数为：
 $$
-L(\theta,z,u) = J(\theta) + \lambda ||z||_1 + u^T(\theta-z) + \frac{1}{2} ||\theta - z||^2
+L(\theta,z,u) = J(\theta) + \lambda \|z\|_1 + u^T(\theta-z) + \frac{1}{2} \|\theta - z\|^2
 $$ 对 $\theta$ 求导
 $$
 \frac{\partial L}{\partial \theta} = -X^T(Y-X \theta) + u + \theta - z
@@ -68,7 +68,7 @@ $$
 \mathrm{argmin}_{\theta,z}\ f(\theta)+g(z)\ \ \mathrm{subject\ to}\ A\theta+Bz = c
 $$ 则有增广拉格朗日函数：
 $$
-L(\theta,z,u) = f(\theta) + g(z) + u^T(A\theta+Bz-c) + \frac{1}{2}||A\theta+Bz-c||^2
+L(\theta,z,u) = f(\theta) + g(z) + u^T(A\theta+Bz-c) + \frac{1}{2}\|A\theta+Bz-c\|^2
 $$ 参数更新式为
 $$
 \begin{array}{lll}
@@ -95,7 +95,7 @@ $$
 \end{array}
 $$
 
-3. 检查 $||\theta^{(k+1)} - \theta^{(k)}||$ ，如果充分小，那么停止迭代，否则重复(2)
+3. 检查 $\|\theta^{(k+1)} - \theta^{(k)}\|$ ，如果充分小，那么停止迭代，否则重复(2)
 
 ### 附：最小角回归
 最小角回归的路径与LASSO相似，但最小角回归并不是从LASSO的模型入手考虑的，也就是说，从结果来看，可以认为最小角回归是LASSO的一种高效解法，但从推导上看则是从不同的起点出发的。要完全获得与LASSO相同的求解路径，应用的是LARS的一种修改版本，在Efron的论文中有非常细致的解说。
@@ -113,7 +113,7 @@ $p \in (0,1)$ 时，优化函数是非凸的，无法确保找到全局最优，
 ## 弹性网回归 ElasticNet
 往线性回归模型中同时添加l1限制和l2限制，求解则变为：
 $$
-\hat{\theta} = \mathrm{argmin}_\theta J(\theta) \ \ \ \ \mathrm{subject\ to}\ \ (1-\alpha)||\theta||_1 + \alpha ||\theta||_2^2 \leq t\ \ \mathrm{for\ some\ t}
-$$ $ (1-\alpha)||\theta||_1 + \alpha ||\theta||_2^2 $ 称为 elastic net penalty , Zhou的论文中巧妙地将l2惩罚融入到数据集中，详见论文中的Lemma 1，将问题转化为一个lasso like 的问题，最后用LAR将求解路径解得。
+\hat{\theta} = \mathrm{argmin}_\theta J(\theta) \ \ \ \ \mathrm{subject\ to}\ \ (1-\alpha)\|\theta\|_1 + \alpha \|\theta\|_2^2 \leq t\ \ \mathrm{for\ some\ t}
+$$ $ (1-\alpha)\|\theta\|_1 + \alpha \|\theta\|_2^2 $ 称为 elastic net penalty , Zhou的论文中巧妙地将l2惩罚融入到数据集中，详见论文中的Lemma 1，将问题转化为一个lasso like 的问题，最后用LAR将求解路径解得。
 
 详见[Hui Zhou的论文：Regularization and variable selection via the elastic net](http://www.stat.purdue.edu/~tlzhang/mathstat/ElasticNet.pdf)
