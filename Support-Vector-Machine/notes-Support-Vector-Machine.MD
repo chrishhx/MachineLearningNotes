@@ -242,6 +242,44 @@ $$
 |拉普拉斯核|$K(u,v) = exp\left[ -\dfrac{ \|u - v\|}{\sigma} \right]$| 带宽 $\sigma > 0$|
 |Sigmoid核|$K(u,v) = \tanh(\beta u^T v + \theta)^d$ | $\beta>0 , \theta<0$|
 
+## 用scikit-learn实现SVM
+
+### iris数据集分类
+
+```python
+class sklearn.svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='auto', coef0=0.0,
+                      shrinking=True, probability=False, tol=0.001, cache_size=200,
+                      class_weight=None, verbose=False, max_iter=-1, decision_function_shape='ovr', random_state=None)
+
+C : float, optional (default=1.0) 惩罚项系数C，Penalty parameter C of the error term.
+
+kernel : string, optional (default=’rbf’) 核函数 ‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’ or a callable.
+
+degree : int, optional (default=3) 多项式核专属，指定次数d Degree of the polynomial kernel function (‘poly’). Ignored by all other kernels.
+
+gamma : float, optional (default=’auto’) Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’. If gamma is ‘auto’ then 1/n_features will be used instead.
+
+coef0 : float, optional (default=0.0) Independent term in kernel function. It is only significant in ‘poly’ and ‘sigmoid’.
+
+probability : boolean, optional (default=False) 是否估计概率 Whether to enable probability estimates. This must be enabled prior to calling fit, and will slow down that method.
+
+shrinking : boolean, optional (default=True)  是否启用收缩启发 Whether to use the shrinking heuristic.
+
+tol : float, optional (default=1e-3) 停止条件 Tolerance for stopping criterion.
+
+cache_size : float, optional 核函数矩阵的缓存，缓存足够大能提高效率 Specify the size of the kernel cache (in MB).
+
+class_weight : {dict, ‘balanced’}, optional Set the parameter C of class i to class_weight[i]*C for SVC. If not given, all classes are supposed to have weight one. The “balanced” mode uses the values of y to automatically adjust weights inversely proportional to class frequencies in the input data as n_samples / (n_classes * np.bincount(y))
+
+verbose : bool, default: False 详细输出 Enable verbose output. Note that this setting takes advantage of a per-process runtime setting in libsvm that, if enabled, may not work properly in a multithreaded context.
+
+max_iter : int, optional (default=-1) 最大迭代次数 Hard limit on iterations within solver, or -1 for no limit.
+
+decision_function_shape : ‘ovo’, ‘ovr’, default=’ovr’ 多分类的方式 Whether to return a one-vs-rest (‘ovr’) decision function of shape (n_samples, n_classes) as all other classifiers, or the original one-vs-one (‘ovo’) decision function of libsvm which has shape (n_samples, n_classes * (n_classes - 1) / 2).
+
+random_state : int, RandomState instance or None, optional (default=None) 随机种子
+```
+
 ## 附录
 ### 单变量二次规划问题
 $y_i,y_j$的符号不同得到的解析解也不同，这里以 $y_i=1,y_j=-1$ 为例详细求解：
