@@ -37,7 +37,17 @@ $$
 \theta_j := \theta_j + \alpha \sum\limits_{i=1}^{n} \left[ y_i - g(x_i^T \theta) \right] x_{ij}
 $$
 
+## 添加正则化项
+对数似然函数 $l(\theta)$ 求极大值等价于 $-l(\theta)$ 求极小值，那么将其看作损失函数则有：
+$$
+Loss(\theta) = -l(\theta) = - \sum\limits_{i=1}^{n} \left \lbrace y_i \mathrm{log} g(x_i^T \theta) + (1-y_i) \mathrm{log}[1-g(x_i^T \theta)] \right \rbrace
+$$ 那么在其上添加正则化项控制 $\theta$ 就非常方便了，设正则化项为 $R(\theta)$ ，那么：
+$$
+Loss_{Regularized}(\theta) = - \sum\limits_{i=1}^{n} \left \lbrace y_i \mathrm{log} g(x_i^T \theta) + (1-y_i) \mathrm{log}[1-g(x_i^T \theta)] \right \rbrace + \lambda R(\theta)
+$$ 则优化目标为 $Loss_{Regularized}$ ，若 $R(\theta)$ 有连续导数，那么求解过程与前面无异，如果是 $l_1$ 这样可导但导数不连续的情况，也可仿照 $Lasso$ 的求解过程，借助次梯度实现求解。
+
 ## 用逻辑回归搭建多分类器
+
 ### 1 vs other
 假设是个$K$分类问题，那么用1对其他的方法需要建立$K$个分类器，第$i$个分类器$C_i$对应的模型就是
 $$
@@ -46,6 +56,7 @@ P(Y=i|X) = \frac{1}{1+e^{-x^T \theta}} \\ \\
 P(Y \neq i|X) = 1 - \frac{1}{1+e^{-x^T \theta}}
 \end{array}
 $$
+
 ### 1 vs 1
 假设是个$K$分类问题，那么用1对其他的方法需要建立$K(K-1)/2$ 个分类器,第 $(i,j) ,i<j$ 个分类其对应的模型是
 $$
@@ -54,6 +65,7 @@ P(Y=i|X) = \frac{1}{1+e^{-x^T \theta}} \\ \\
 P(Y=j|X) = 1 - \frac{1}{1+e^{-x^T \theta}}
 \end{array}
 $$
+
 ### 拓展模型(softmax回归，multinomial假设)
 考虑m分类问题，模型为
 $$
@@ -77,9 +89,6 @@ $$ 求$-l(\theta)$的极小值点的梯度下降更新方程为
 $$
 \theta_{kj} := \theta_{kj} + \alpha \sum\limits_{i=1}^{n} \left[ y_i - g(x_i^T \theta_k) \right] x_{ij}
 $$ $\theta_{kj}$ 为 $\theta_k$ 的第 $j$ 个分量，注意到这个梯度下降更新方程的形式与前面是相同的，实际上，由于multinomial属于指数族，在广义线性模型中都可以获得类似的梯度下降更新方程。
-
-### 惩罚项
-将$-l(\theta)$视为损失函数的话，就可以在上面添加惩罚项(正则化项)防止过拟合了。
 
 ## 用scikit-learn实现
 
