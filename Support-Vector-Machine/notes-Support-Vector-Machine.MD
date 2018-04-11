@@ -70,8 +70,8 @@ $$
 $$
 
 $$
-\mathrm{subject\ to}\ \ \frac{y_i(x_i^T \beta + \beta_0)}{\|\beta\|^2} \geq M > 0 \ \ \ \ \forall i=1,...,n
-$$
+\mathrm{subject\ to}\ \ \frac{y_i(x_i^T \beta + \beta_0)}{\|\beta\|_2} \geq M > 0 \ \ \ \ \forall i=1,...,n
+$$ 其中 $\|\cdot\|_2$ 为二范数
 
 由于$(\beta_1,...,\beta_p)^T$ 为超平面的法向量，则样本 $x_i$ 到超平面的距离为
 $$
