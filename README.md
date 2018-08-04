@@ -26,11 +26,9 @@ Decision Tree
 
 Ensemble-Method
 > Ensembles of models are powerful and efficient. Working on it.
-> By the way , Ensemble Method is my major research area.
 
 Neural Networks
 > just configurate develop environment. Cuda / cudnn / pytorch / tensorflow
-> may not update recently.
 
 ## In Plan
 
