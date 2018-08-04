@@ -28,7 +28,7 @@ Ensemble-Method
 > By the way , Ensemble Method is my major research area.
 
 Neural Networks
-> just configurate develop environment. Cuda / cudnn / tensorflow-gpu
+> just configurate develop environment. Cuda / cudnn / pytorch / tensorflow
 > may not update recently.
 
 ### In Plan
