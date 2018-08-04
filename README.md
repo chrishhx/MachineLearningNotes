@@ -1,7 +1,9 @@
 # MachineLearningNotes
+
 Notes and demos codes for machine learning algorithms.
 
-### Basically Done
+## Basically Done
+
 may add more contents or edit the existing files
 
 Support Vector Machine
@@ -20,8 +22,7 @@ k Nearest Neighbors
 Decision Tree
 > Introduce the framework of decision tree and 3 classic criterion corresponding to ID3,C4.5,CART
 
-
-### In Progress
+## In Progress
 
 Ensemble-Method
 > Ensembles of models are powerful and efficient. Working on it.
@@ -31,7 +32,7 @@ Neural Networks
 > just configurate develop environment. Cuda / cudnn / pytorch / tensorflow
 > may not update recently.
 
-### In Plan
+## In Plan
 
 Dimension Reduction
 
