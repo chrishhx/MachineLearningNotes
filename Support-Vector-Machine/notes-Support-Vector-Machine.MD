@@ -108,32 +108,32 @@ $$
 如果样本观测不是严格的线性可分，那么前面基于分离平面的最大边距分类器将训练样本完全准确划分成两类是不妥当的，分离平面对接近分离平面的样本点过于敏感，可能导致过拟合。而且，基于硬边界原则得到的分类器可能只有一个很小的边距，而我们对分类的置信度与样本点距离分离平面的距离有关。由此，我们考虑允许对训练样本的不完全准确的分类，以求获得更大的边距（Margin），那么可以将问题的写为
 $$
 \begin{array}{ccc}
-\underset{\beta,\beta_0}{min}\ \dfrac{1}{2}\|\beta\|_2^2 + C \sum\limits_{i=1}^{p} Loss( y_i(x_i^T \beta + \beta_0)) \\ \\
+\underset{\beta,\beta_0}{min}\ \dfrac{1}{2}\|\beta\|_2^2 + C \sum\limits_{i=1}^{n} Loss( y_i(x_i^T \beta + \beta_0)) \\ \\
 \end{array}
 $$ 其中Loss为某一损失函数，一个直接的想法是用0/1损失，但是0/1损失的性质不方便求解，通常用hinge loss,指数损失，对率损失等代替，此处使用hinge loss，则模型写为：
 $$
 \begin{array}{ccc}
-\underset{\beta,\beta_0}{min}\ \dfrac{1}{2}\|\beta\|_2^2 + C \sum\limits_{i=1}^{p} \max(0,1-y_i(x_i^T \beta + \beta_0)) \\ \\
+\underset{\beta,\beta_0}{min}\ \dfrac{1}{2}\|\beta\|_2^2 + C \sum\limits_{i=1}^{n} \max(0,1-y_i(x_i^T \beta + \beta_0)) \\ \\
 \end{array}
-$$ 引入松弛变量，将其改写为：
+$$ 引入松弛变量 $\xi_i \geq 1 - y_i(x_i^T \beta + \beta_0)$，将其改写为：
 $$
 \begin{array}{ccc}
-\underset{\beta,\beta_0}{min}\ \dfrac{1}{2}\|\beta\|_2^2 + C\sum\limits_{i=1}^{p} \xi_i \\ \\
-\mathrm{subject\ to}\ y_i(x_i^T \beta + \beta_0) \geq 1-\xi_i\ ,\ \xi_i\geq0 \ \ \forall i=1,...,n
+\underset{\beta,\beta_0}{min}\ \dfrac{1}{2}\|\beta\|_2^2 + C\sum\limits_{i=1}^{n} \xi_i \\ \\
+\mathrm{subject\ to}\ \ 1-\xi_i-y_i(x_i^T \beta + \beta_0) \leq 0\ ,\ \xi_i\geq0 \ \ \forall i=1,...,n
 \end{array}
 $$
 
-其中，$C \geq 0$，$\xi_1,...,\xi_n$为松弛变量，以允许单个的观测落到错误地分类，$\sum\limits_{i=1}^{p} \xi_i$可以看作错分的总量。
+其中，$C \geq 0$，$\xi_1,...,\xi_n$为松弛变量，以允许单个的观测落到错误地分类，$\sum\limits_{i=1}^{n} \xi_i$可以看作错分的总量。
 一旦我们解得 $\beta$ ，得到超平面 $x^T \beta + \beta_0=0$ ，就可以对测试样本观测 $x^*$ 分类。与最大间隔分类器一样，也是利用 $f(x^*) = x^{*T} \beta + \beta_0$ 的符号分类。
 
-最终得到的$\xi_i$的含义是，若$\xi_i>0$，那么意味着第 $i$ 个训练样本的位置在边距以内（violated the margin）；若$\xi_i>1$，那么意味着第i个样本在分离平面错误的一侧。加入这一项的目的是，如果错分少数几个样本，可以大幅增大边距 $M$ ，那么就容忍这些错分的样本，$C$ 越大，错分的代价就约高，倾向于尽可能正确地分离训练集。参数 $C$ 是可调节的参数，一般可以通过交叉验证（cross validation）确定。
+最终得到的$\xi_i$的含义是，若$\xi_i>0$，那么意味着第 $i$ 个训练样本的位置在边距以内（violated the margin）；若$\xi_i>1$，那么意味着第i个样本在分离平面错误的一侧。加入这一项的目的是，如果错分少数几个样本，可以大幅增大边距 $M$ ，那么就容忍这些错分的样本，$C$ 越大，错分的代价就越高，倾向于尽可能正确地分离训练集。参数 $C$ 是可调节的参数，一般可以通过交叉验证（cross validation）确定。
 
-问题求解得到的分类器称为支持向量分类器（support vector classifier），也称为软边界的支持向量机（soft margin support vector machine），而哪些落在边界(Margin)上或者边界内的样本则称为支持向量（support vector），支持向量机的训练结果只取决于所有的支持向量，其他的向量称为非支持向量（non-support vector），对训练结果没有影响。
+问题求解得到的分类器称为支持向量分类器（support vector classifier），也称为软边界的支持向量机（soft margin support vector machine），而那些落在边界(Margin)上或者边界内的样本则称为支持向量（support vector），支持向量机的训练结果只取决于所有的支持向量，其他的向量称为非支持向量（non-support vector），对训练结果没有影响，这一点将在后面的求解中得以说明。
 
 考虑问题的拉格朗日函数
 $$
 L(\beta_0,\beta,\varepsilon,a,b) =
-\dfrac{1}{2}\|\beta\|_2^2 + C \sum_{i=1}^p  \xi_i^2 - \sum_{i=1}^n  a_i\left[1-\xi_i - y_i(\beta_0+\beta^T x_i) \right] - \sum_{i=1}^n b_i \xi_i
+\dfrac{1}{2}\|\beta\|_2^2 + C \sum_{i=1}^n  \xi_i + \sum_{i=1}^n  a_i\left[1-\xi_i - y_i(\beta_0+\beta^T x_i) \right] - \sum_{i=1}^n b_i \xi_i
 $$
 
 其中，$a_i,b_i$ 是拉格朗日乘子，将问题转化为拉格朗日对偶问题
@@ -150,35 +150,36 @@ $$
 \end{array}
 $$
 
-可以看到 $\beta,b$ 都可以由 $a,x,y$ 来表示，而$a_i + b_i = 0$则允许我们消去$L(\beta_0,\beta,\xi,a,b)$ 中的$\xi$，拉格朗日对偶问题化为
+可以看到 $\beta,b$ 都可以由 $a,x,y$ 来表示，而$a_i + b_i = C$ 则允许我们消去$L(\beta_0,\beta,\xi,a,b)$ 中的$\xi$，拉格朗日对偶问题化为
 $$
 \begin{array}{lll}
-\hat{a} = \underset{a}{\mathrm{argmax}} \left[ \sum_{i=1}^n  a_i - \sum_{i,j=1}^n  a_i a_j y_i y_j x_i^T x_j \right] \\ \\
+\hat{a} = \underset{a}{\mathrm{argmax}} \left[ \sum\limits_{i=1}^n  a_i - \sum\limits_{i,j=1}^n  a_i a_j y_i y_j x_i^T x_j \right] \\ \\
 \mathrm{subject\ to\ } \sum_{i=1}^n a_i y_i = 0 ,\ 0\leq a_i \leq C \ \ \forall i=1,...,n
 \end{array} \ \ \ \ \ \ (1)
 $$
 
-又由解$\hat{a}_i$可以得到
+又由解 $\hat{a}$ 可以得到
 $$ \hat{\beta} = \sum_{i=1}^n \hat{a}_i y_i x_i \ \ \ \ (2)$$ 
 
 以及
 $$ \hat{\beta_0} = y_i - \sum_{j:\hat{a_i}>0} \hat{a}_i y_j x_i^T x_j \ \ \ \ (3)$$
 
-如果再考虑KKT条件的要求
+再考虑上KKT条件的要求
 $$
 \left \lbrace
 \begin{array}{lll}
 a_i \geq 0 , b_i \geq 0 \\ \\
-m_i-1+\xi_i \geq 0 \\ \\
-a_i (m_i-1+\xi_i)=0\\ \\
+1-\xi_i-m_i \leq 0 \\ \\
+a_i (1-\xi_i-m_i)=0\\ \\
 \xi_i \geq 0\ ,\ \beta_i \xi_i=0 \ \ \ \forall i=1,...,n 
 \end{array} \right .
 $$
 其中 $m_i=y_i(\beta x_i + \beta_0)$ 为第 $i$ 个样本的边距
 
-要么 $a_i = 0$ ， 要么 $m_i-1+\xi_i = 0$ ，也就是，一个样本要么对分离平面没有影响，要么就在边距内，从这里可以知道，使得 $a_i > 0$ 的样本 $x_i$ 为支持向量（support vector），对训练结果有影响，其他的离分离平面较远的样本则是对训练结果没有影响的非支持向量（non-support vector）。
+要么 $a_i = 0$ ， 要么 $1-\xi_i-m_i = 0$ ，也就是，一个样本要么对分离平面没有影响 $(a_i=0)$，要么就在边距内或错分 $(1 - m_i = \xi_i \geq 0)$，从这里可以知道，使得 $a_i > 0$ 的样本 $x_i$ 为支持向量（support vector），对训练结果有影响，其他的离分离平面较远的样本则是对训练结果没有影响的非支持向量（non-support vector）。
 
 可以总结得：
+
 1. $a_i = 0 , m_i > 1$：即 $x_i$ 在正确的分类里且在边界外，对边界没有影响，不是支持向量；
 2. $0 < a_i < C , 0 \leq m_i \leq 1 , \xi_i < 1$ ：样本 $x_i$ 在边界上，对边界有影响，是支持向量；
 3. $0 < a_i < C , m_i < 0 , \xi_i > 1$ ：样本 $x_i$ 被分错，对边界有影响，是支持向量；
@@ -186,6 +187,7 @@ $$
 现在问题在于如何求解 $(1)$, 可以看到这实际上是一个二次规划的问题，但二次规划在参数量较多时性能比较差，而此处参数量为 $1+p+n$，随样本量增加而增加，因而此处不用二次规划求解，而使用SMO（Sequential Minimal Optimazation）求解。
 
 SMO算法流程
+
 1. 选取一对需要更新的变量$a_i,a_j\ i \not= j$;
 2. 固定 $a_i,a_j$ 以外的参数，求解 $(1)$ 获得更新后的 $a_i,a_j$
 3. 重复 1,2 直至收敛
@@ -201,11 +203,11 @@ $$
 \end{array}
 $$ 其中 $c = -\sum\limits_{k \not = i,j} a_k y_k$，将 $a_j = (c - a_i y_i) / y_j$ 代入消去 $a_j$ ,得到关于 $a_i$ 的单变量二次规划问题，在限制下直接求解 $a_i$ 即可，单变量二次规划问题的求解见文末附。
 
-求解后，实际上我们可以得到参数 $\beta,\beta_0$ ，然后就可以使用分离超平面来分类了，而大家常说的SVM的优点里有一条是：**做预测时只要支持向量，开销较小**
-可是在得到参数 $\beta,\beta_0$ 之后，我们明明可以抛弃所有的训练集，只用的最终参数，那为什么有这种说法呢，首先将预测函数修改一下：
+求解得到 $\hat{a}$ 后，实际上我们可以得到参数 $\beta,\beta_0$ ，然后就可以使用分离超平面来分类了，而大家常说的SVM的优点里有一条是：**做预测时只要支持向量，开销较小**
+可是在得到参数 $\beta,\beta_0$ 之后，我们明明可以抛弃所有的训练集，只用的最终参数，那为什么有这种说法呢，首先将预测函数修改一下，将 $\hat{a}$ 代入 $\beta$：
 $$
 \begin{array}{lll}
-f(x^*) &= x_i^T \beta + \beta_0\ \ \ \ \ \ \ \ \ \ \ \ \ \ (a) \\ \\
+f(x^*) &= \beta^T x^* + \beta_0\ \ \ \ \ \ \ \ \ \ \ \ \ \ (a) \\ \\
 &= \underset{i \in S}{\sum} a_i x_i^T x^* + \beta_0 \ \ \ \ (b)
 \end{array} \ \ \ \ \ (4)
 $$ $S$ 为所有支持向量的集合，对比上面两者，在当前情况下确实直接用参数会比较快，而且储存的内容也少，但是用 $(a)$ 式的话，则无法应用下面的核方法将线性边界转化为非线性边界了，因此SVM的关键就在于**找到所有的支持向量，再用支持向量构筑边界**，所以在配合核函数使用时，必须用 $(b)$ 式。
@@ -243,8 +245,6 @@ $$
 |Sigmoid核|$K(u,v) = \tanh(\beta u^T v + \theta)^d$ | $\beta>0 , \theta<0$|
 
 ## 用scikit-learn实现SVM
-
-### iris数据集分类
 
 ```python
 class sklearn.svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='auto', coef0=0.0,
